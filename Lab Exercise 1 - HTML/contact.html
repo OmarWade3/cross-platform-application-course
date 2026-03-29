@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Omer's Academic Results">
+    <title>Academic Record - Omer</title>
+</head>
+<body>
+    <header>
+        <h1>Academic Record</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Me</a></li>
+            <li><a href="skills.html">Skills & Technologies</a></li>
+            <li><a href="academic.html">Academic Record</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="skills.html">Skills</a></li>
+            <li><a href="projects.html">Projects</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section>
+            <form action="#" method="post" style="background-color: #f9f9f9; padding: 20px; border: 1px solid #ccc;">
+                <h2>Contact Me</h2>
+                <fieldset style="border: 2px solid navy; padding: 15px;">
+                    <legend style="font-weight: bold; padding: 0 10px;">Send a Message</legend>
+
+                    <p>
+                        <label for="fullname">Full Name:</label><br>
+                        <input type="text" id="fullname" name="fullname" 
+                               style="border: 2px solid navy; padding: 6px; font-size: 14px;" 
+                               placeholder="e.g. Omer Elwadia" required maxlength="60">
+                    </p>
+
+                    <p>
+                        <label for="user-email">Email Address:</label><br>
+                        <input type="email" id="user-email" name="user-email" 
+                               style="border: 1px solid gray; padding: 5px;" 
+                               placeholder="name@example.com" required>
+                    </p>
+
+                    <p>
+                        <label for="phone">Phone Number:</label><br>
+                        <input type="tel" id="phone" name="phone" placeholder="123-456-7890">
+                    </p>
+
+                    <p>
+                        <label for="experience">Years of Programming Experience:</label><br>
+                        <input type="number" id="experience" name="experience" min="0" max="50" value="1">
+                    </p>
+
+                    <p>
+                        <label for="start-date">Preferred Project Start Date:</label><br>
+                        <input type="date" id="start-date" name="start-date">
+                    </p>
+
+                    <p>
+                        <label for="urgency">Project Urgency (1-10):</label><br>
+                        <input type="range" id="urgency" name="urgency" min="1" max="10">
+                    </p>
+
+                    <p>
+                        <label for="subject">Subject:</label><br>
+                        <select id="subject" name="subject" required>
+                            <option value="" selected disabled>-- Please choose an option --</option>
+                            <optgroup label="General">
+                                <option value="collaboration">Collaboration</option>
+                                <option value="hiring">Hiring</option>
+                            </optgroup>
+                            <optgroup label="Technical">
+                                <option value="backend">Backend Support</option>
+                                <option value="frontend">Frontend Support</option>
+                            </optgroup>
+                        </select>
+                    </p>
+
+                    <p>
+                        <strong>Preferred Contact Method:</strong><br>
+                        <input type="radio" id="contact-email" name="method" value="email" checked>
+                        <label for="contact-email">Email</label>
+                        
+                        <input type="radio" id="contact-phone" name="method" value="phone">
+                        <label for="contact-phone">Phone</label>
+                        
+                        <input type="radio" id="contact-social" name="method" value="social">
+                        <label for="contact-social">Social Media</label>
+                    </p>
+
+                    <p>
+                        <strong>Services Required:</strong><br>
+                        <input type="checkbox" id="web-dev" name="service" value="web">
+                        <label for="web-dev">Web Development</label>
+                        
+                        <input type="checkbox" id="ai-ml" name="service" value="ai">
+                        <label for="ai-ml">AI/ML Integration</label>
+                        
+                        <input type="checkbox" id="consultation" name="service" value="consult">
+                        <label for="consultation">Consultation</label>
+                    </p>
+
+                    <p>
+                        <label for="message">Detailed Message:</label><br>
+                        <textarea id="message" name="message" rows="5" cols="40" 
+                                  style="border: 1px dashed navy; padding: 10px;"
+                                  placeholder="Write your message here..." required></textarea>
+                    </p>
+
+                    <button type="submit" style="background-color: navy; color: white; padding: 10px 20px; border: none; cursor: pointer;">
+                        Send Message
+                    </button>
+
+                </fieldset>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <address>
+            Contact me at: <a href="mailto:omer.2002.hayder@gmail.com">omer.2002.hayder@gmail.com</a>
+        </address>
+        <p><small>&copy; 2026 Omer Haydar Elwadia. All rights reserved.</small></p>
+    </footer>
+</body>
+</html>
