@@ -197,3 +197,56 @@ img {
     border-radius: 50%;
     border: 3px solid var(--color-primary);
 }
+
+.page-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-lg);
+    width: 100%; /
+    margin: var(--space-lg) 0;
+}
+
+.card {
+    background-color: white;
+    padding: var(--space-lg);
+    border: 1px solid var(--color-grey-light);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    border-color: var(--color-accent-1);
+}
+
+.card.featured {
+    grid-column: 1 / -1;
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.card.featured h3 {
+    color: var(--color-accent-1);
+}
+
+.grid-sidebar-layout {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: var(--space-lg);
+    align-items: start;
+}
+
+.sidebar {
+    background-color: var(--color-grey-light);
+    padding: var(--space-md);
+    border-radius: 8px;
+    border: 1px solid var(--color-grey-med);
+}
+
+.main-content {
+    background-color: white;
+}
