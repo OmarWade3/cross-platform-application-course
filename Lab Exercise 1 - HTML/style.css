@@ -250,3 +250,94 @@ img {
 .main-content {
     background-color: white;
 }
+
+/* ============================================
+   BREAKPOINTS
+   mobile-first base: 320px and up (default)
+   tablet: @media (min-width: 600px)
+   desktop: @media (min-width: 1024px)
+   ============================================ */
+
+/* --- 1. Base Styles (Mobile < 600px) --- */
+
+/* Responsive Images */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Mobile Header: Single Column */
+header {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--space-md);
+}
+
+/* Mobile Navigation: Vertical Stack */
+nav {
+    flex-direction: column;
+    padding: var(--space-md);
+}
+
+nav ul {
+    flex-direction: column;
+    width: 100%;
+    text-align: center;
+}
+
+/* Mobile Grid: Single Column */
+.page-cards, .grid-container, .grid-sidebar-layout {
+    grid-template-columns: 1fr;
+}
+
+/* Mobile: Disable the 'span' so featured cards don't break small screens */
+.card.featured {
+    grid-column: 1;
+}
+
+/* --- 2. Tablet Breakpoint (600px and up) --- */
+@media (min-width: 600px) {
+    header {
+        flex-direction: row;
+        text-align: left;
+    }
+
+    nav {
+        flex-direction: row;
+    }
+
+    nav ul {
+        flex-direction: row;
+        width: auto;
+    }
+
+    .page-cards, .grid-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .card.featured {
+        grid-column: span 2;
+    }
+}
+
+/* --- 3. Desktop Breakpoint (1024px and up) --- */
+@media (min-width: 1024px) {
+    .page-cards, .grid-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    /* Activate the Sidebar layout only on Desktop */
+    .grid-sidebar-layout {
+        grid-template-columns: 1fr 280px;
+    }
+
+    .card.featured {
+        grid-column: 1 / -1;
+    }
+
+    main {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+}
