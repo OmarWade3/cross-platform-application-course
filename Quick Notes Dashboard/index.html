@@ -101,7 +101,31 @@
 					<button id="addNoteBtn">+ Add Note</button>
 					<div class="counter" id="noteCounter">0 notes</div>
 				</div>
-				<div class="card" id="right-panel">RIGHT</div>
+				<div class="card" id="right-panel">
+					<h2>📋📋 Your notes</h2>
+
+					<div id="notesContainer" class="notes-list">
+						<div style="color:#94a3b8;text-align:center;">
+						✨ No notes yet. Create one!
+						</div>
+					</div>
+
+					<hr>
+					<h2 style="font-size:1rem;">🌐🌐 Browser info (BOM)</h2>
+					<div class="info-panel" id="bomPanel">
+						<div class="info-row">
+							<span>🖥🖥 Window size:</span>
+							<span id="windowSize">-- x --</span>
+						</div>
+						<div class="info-row">
+							<span>📱📱 User Agent:</span>
+							<span id="userAgent">--</span>
+						</div>
+					</div>
+					<button id="clearAllBtn" style="background:#64748b;margin-top:0.8rem;"> 
+						🗑🗑 Clear all notes
+					</button>
+				</div>
 			</div>
 		</div>
 	</body>
