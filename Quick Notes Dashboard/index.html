@@ -71,7 +71,36 @@
 				padding: 0.2rem 0.8rem; border-radius: 20px;
 				font-size: 0.7rem; font-weight: 700; margin-top: 1rem;
 			}
-
+			.notes-list {
+				margin-top: 1.2rem; max-height: 380px;
+				overflow-y: auto;
+				display: flex; flex-direction: column; gap: 0.8rem;
+			}
+			.note-item {
+				background: #f8fafc; border: 1px solid #e2e8f0;
+				border-radius: 1rem; padding: 0.8rem 1rem;
+			}
+			.note-title {
+				font-weight: 800;
+				display: flex; justify-content: space-between;
+				align-items: center; margin-bottom: 0.3rem;
+			}
+			.note-content { font-size: 0.85rem; color: #334155; }
+			.info-panel {
+				background: #f1f5f9; border-radius: 1rem; padding: 0.8rem;
+				margin-top: 1rem;
+			}
+			.info-row {
+				display: flex; justify-content: space-between;
+				font-size: 0.8rem; padding: 0.3rem 0;
+				border-bottom: 1px dashed #cbd5e1;
+			}
+			.delete-note {
+				background: #ef4444; padding: 0.3rem 1rem;
+				font-size: 0.7rem; border-radius: 1rem;
+			}
+			.delete-note:hover { background: #dc2626; }
+			hr { margin: 1rem 0; }
 		</style>
 	</head>
 	<body>
