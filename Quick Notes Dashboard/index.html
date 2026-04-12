@@ -47,6 +47,31 @@
 				font-size: 1.2rem; margin-bottom: 1rem;
 				border-left: 4px solid #3b82f6; padding-left: 0.7rem;
 			}
+			.form-group { margin-bottom: 1rem; }
+			label {
+				font-weight: 600; font-size: 0.8rem;
+				text-transform: uppercase; color: #475569;
+				display: block; margin-bottom: 0.3rem;
+			}
+			input, textarea {
+				width: 100%; padding: 0.7rem;
+				border: 2px solid #e2e8f0; border-radius: 1rem;
+				font-family: inherit; outline: none;
+			}
+			input:focus, textarea:focus {border-color:#3b82f6;}
+			button {
+				background: #3b82f6; border: none; color: white;
+				font-weight: 600; padding: 0.6rem 1.2rem;
+				border-radius: 2rem; cursor: pointer;
+				font-family: inherit; transition: 0.1s;
+			}
+			button:hover { background: #2563eb; }
+			.counter {
+				background: #e6f0ff; display: inline-block;
+				padding: 0.2rem 0.8rem; border-radius: 20px;
+				font-size: 0.7rem; font-weight: 700; margin-top: 1rem;
+			}
+
 		</style>
 	</head>
 	<body>
@@ -59,7 +84,23 @@
 				<div class="badge">Lab: BOM + DOM | pure JS</div>
 			</header>
 			<div class="grid">
-				<div class="card" id="left-panel">LEFT</div>
+				<div class="card" id="left-panel">
+					<h2>✏ Add a note</h2>
+
+					<div class="form-group">
+						<label>📌📌 Title *</label>
+						<input type="text" id="noteTitle" placeholder="e.g., DOM practice">
+					</div>
+
+					<div class="form-group">
+						<label>📝📝 Content</label>
+						<textarea id="noteContent" rows="2"
+						placeholder="Write something..."></textarea>
+					</div>
+
+					<button id="addNoteBtn">+ Add Note</button>
+					<div class="counter" id="noteCounter">0 notes</div>
+				</div>
 				<div class="card" id="right-panel">RIGHT</div>
 			</div>
 		</div>
