@@ -30,6 +30,23 @@
 				font-size: 0.75rem; font-weight: 600;
 				display: inline-block; margin-top: 0.5rem;
 			}
+			.grid {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 1.8rem;
+			}
+			@media (max-width: 700px) {
+				.grid { grid-template-columns: 1fr; }
+			}
+			.card {
+				background: white; border-radius: 1.2rem;
+				padding: 1.5rem; border: 1px solid #e2e8f0;
+				box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+			}
+			.card h2 {
+				font-size: 1.2rem; margin-bottom: 1rem;
+				border-left: 4px solid #3b82f6; padding-left: 0.7rem;
+			}
 		</style>
 	</head>
 	<body>
@@ -41,6 +58,10 @@
 				<p>Practice <strong>DOM manipulation</strong> + <strong>BOM</strong>.</p>
 				<div class="badge">Lab: BOM + DOM | pure JS</div>
 			</header>
+			<div class="grid">
+				<div class="card" id="left-panel">LEFT</div>
+				<div class="card" id="right-panel">RIGHT</div>
+			</div>
 		</div>
 	</body>
 </html>
