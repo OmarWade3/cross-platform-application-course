@@ -116,6 +116,57 @@
 			const noteCounterSpan = document.getElementById("noteCounter");
 			const windowSizeSpan = document.getElementById("windowSize");
 			const userAgentSpan = document.getElementById("userAgent");
+			function updateCounter() {
+				const count = notes.length;
+				noteCounterSpan.textContent = count === 1 ? "1 note" : `${count} notes`;
+			}
+			function renderNotes() {
+				// ── clear container safely (no innerHTML) ──
+				while (notesContainer.firstChild) {
+					notesContainer.removeChild(notesContainer.firstChild);
+				}
+				// ── empty-state message ──
+				if (notes.length === 0) {
+					const emptyMsg = document.createElement("div");
+					emptyMsg.textContent = "📭📭 No notes yet. Add your first note!";
+					emptyMsg.style.color = "#94a3b8";
+					emptyMsg.style.textAlign = "center";
+					emptyMsg.style.padding = "1rem";
+					notesContainer.appendChild(emptyMsg);
+					updateCounter();
+					return;
+				}
+				notes.forEach(note => {
+					// wrapper div
+					const noteDiv = document.createElement("div");
+					noteDiv.classList.add("note-item");
+					noteDiv.setAttribute("data-id", note.id);
+
+					// title row
+					const titleDiv = document.createElement("div");
+					titleDiv.classList.add("note-title");
+					const titleSpan = document.createElement("span");
+					titleSpan.textContent = note.title;
+
+					// delete button
+					const deleteBtn = document.createElement("button");
+					deleteBtn.textContent = "🗑🗑 Delete";
+					deleteBtn.classList.add("delete-note");
+					deleteBtn.setAttribute("data-action", "delete");
+					deleteBtn.setAttribute("data-id", note.id);
+					titleDiv.appendChild(titleSpan);
+					titleDiv.appendChild(deleteBtn);
+					
+					// content paragraph
+					const contentP = document.createElement("p");
+					contentP.classList.add("note-content");
+					contentP.textContent = note.content || "(no additional content)";
+					noteDiv.appendChild(titleDiv);
+					noteDiv.appendChild(contentP);
+					notesContainer.appendChild(noteDiv);
+					});
+				updateCounter();
+			}
 		</script>
 		<div class="container">
 			<header>
