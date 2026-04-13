@@ -156,7 +156,7 @@
 					deleteBtn.setAttribute("data-id", note.id);
 					titleDiv.appendChild(titleSpan);
 					titleDiv.appendChild(deleteBtn);
-					
+
 					// content paragraph
 					const contentP = document.createElement("p");
 					contentP.classList.add("note-content");
@@ -166,6 +166,22 @@
 					notesContainer.appendChild(noteDiv);
 					});
 				updateCounter();
+			}
+			function addNote() {
+				const title = titleInput.value.trim();
+				// BOM: alert() for empty-title validation
+				if (title === "") {
+					alert("❌ Title cannot be empty!");
+					titleInput.focus();
+					return;
+				}
+				const content = contentInput.value.trim();
+				notes.push({ id: nextId++, title, content });
+				renderNotes();
+				// clear inputs after adding
+				titleInput.value = "";
+				contentInput.value = "";
+				titleInput.focus();
 			}
 		</script>
 		<div class="container">
