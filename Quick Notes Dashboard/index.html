@@ -183,6 +183,16 @@
 				contentInput.value = "";
 				titleInput.focus();
 			}
+			function deleteNoteById(id) {
+				// BOM: confirm() returns true/false
+				const ok = confirm("⚠ Are you sure you want to delete this note?");
+				if (!ok) return;
+				const index = notes.findIndex(n => n.id === id);
+				if (index !== -1) {
+					notes.splice(index, 1);
+					renderNotes();
+				}
+			}
 		</script>
 		<div class="container">
 			<header>
