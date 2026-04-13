@@ -193,6 +193,21 @@
 					renderNotes();
 				}
 			}
+			function clearAllNotes() {
+				if (notes.length === 0) {
+					alert("📭📭 No notes to clear.");
+					return;
+				}
+				const ok = confirm(
+				`❗ Delete ALL ${notes.length} notes? Cannot be undone.`
+				);
+				if (ok) {
+					notes = [];
+					nextId = 1;
+					renderNotes();
+					alert("✨ All notes have been cleared.");
+				}
+			}
 		</script>
 		<div class="container">
 			<header>
