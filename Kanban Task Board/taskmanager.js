@@ -49,3 +49,58 @@ function addTask(columnId, taskObj) {
     list.appendChild(createTaskCard(taskObj));
     updateCounter();
 }
+
+// Open Modal
+document.querySelectorAll('.add-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        editingId = null;
+        document.getElementById('modal-title-text').textContent = 'Add New Task';
+        modal.classList.remove('is-hidden');
+        modal.setAttribute('data-target-col', btn.getAttribute('data-column'));
+    });
+});
+
+// Save Task (Combined Create/Update)
+document.getElementById('save-task').addEventListener('click', () => {
+    const taskData = {
+        id: editingId || Date.now(),
+        title: document.getElementById('task-title').value,
+        description: document.getElementById('task-desc').value,
+        priority: document.getElementById('task-priority').value,
+        date: document.getElementById('task-date').value
+    };
+
+    if (editingId) {
+        updateTask(editingId, taskData);
+    } else {
+        const colId = modal.getAttribute('data-target-col');
+        addTask(colId, taskData);
+    }
+    closeModal();
+});
+
+function deleteTask(taskId) {
+    const card = document.querySelector(`[data-id="${taskId}"]`);
+    card.classList.add('fade-out');
+    setTimeout(() => {
+        card.remove();
+        tasks = tasks.filter(t => t.id !== taskId);
+        updateCounter();
+    }, 300);
+}
+
+// Event Delegation for Edit/Delete
+document.querySelectorAll('.task-list').forEach(list => {
+    list.addEventListener('click', (e) => {
+        const action = e.target.getAttribute('data-action');
+        const id = parseInt(e.target.getAttribute('data-id'));
+        if (action === 'delete') deleteTask(id);
+        if (action === 'edit') prepareEdit(id);
+    });
+});
+
+function closeModal() {
+    modal.classList.add('is-hidden');
+    document.querySelectorAll('.modal input, .modal textarea').forEach(i => i.value = '');
+}
+document.getElementById('cancel-task').addEventListener('click', closeModal);
