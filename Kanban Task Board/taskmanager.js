@@ -104,3 +104,48 @@ function closeModal() {
     document.querySelectorAll('.modal input, .modal textarea').forEach(i => i.value = '');
 }
 document.getElementById('cancel-task').addEventListener('click', closeModal);
+
+// Priority Filtering
+document.getElementById('filter-priority').addEventListener('change', (e) => {
+    const val = e.target.value;
+    document.querySelectorAll('.task-card').forEach(card => {
+        const match = val === 'all' || card.getAttribute('data-priority') === val;
+        card.classList.toggle('is-hidden', !match);
+    });
+});
+
+// Clear Done with Staggered Animation
+document.getElementById('clear-done').addEventListener('click', () => {
+    const doneCards = document.querySelectorAll('#done .task-card');
+    doneCards.forEach((card, index) => {
+        setTimeout(() => {
+            card.classList.add('fade-out');
+            setTimeout(() => {
+                const id = parseInt(card.getAttribute('data-id'));
+                tasks = tasks.filter(t => t.id !== id);
+                card.remove();
+                updateCounter();
+            }, 300);
+        }, index * 100);
+    });
+});
+
+// Inline Edit (Example for titles)
+document.addEventListener('dblclick', (e) => {
+    if (e.target.classList.contains('editable-title')) {
+        const oldText = e.target.textContent;
+        const input = document.createElement('input');
+        input.value = oldText;
+        
+        const save = () => {
+            e.target.textContent = input.value;
+            input.replaceWith(e.target);
+        };
+
+        input.addEventListener('blur', save);
+        input.addEventListener('keydown', (key) => { if(key.key === 'Enter') save(); });
+        
+        e.target.replaceWith(input);
+        input.focus();
+    }
+});
