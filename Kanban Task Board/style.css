@@ -1,0 +1,45 @@
+body {	
+	font-family: sans-serif; 
+	background: #f4f4f9; 
+	padding: 20px; 
+}
+.board { 
+	display: flex; 
+	gap: 20px; 
+	align-items: flex-start; 
+}
+.column { 
+	background: #ebedf0; 
+	border-radius: 8px; 
+	width: 300px; 
+	padding: 15px; 
+	min-height: 400px; 
+}
+.task-list { 
+	list-style: none; 
+	padding: 0; 
+}
+.task-card { 
+	background: white; 
+	padding: 10px; 
+	margin-bottom: 10px; 
+	border-radius: 4px; 
+	box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+	transition: opacity 0.3s; 
+}
+.is-hidden { 
+	display: none !important; 
+}
+.fade-out { 
+	opacity: 0; 
+	pointer-events: none; 
+}
+.priority-low { 
+	border-left: 5px solid green; 
+}
+.priority-medium { 
+	border-left: 5px solid orange; 
+}
+.priority-high { 
+	border-left: 5px solid red; 
+}
