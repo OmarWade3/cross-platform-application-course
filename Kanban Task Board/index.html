@@ -1,64 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kanban Task Board</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <header>
-        <h1>Kanban Board <span id="task-counter">0</span></h1>
-        <div class="controls">
-            <label for="filter-priority">Filter:</label>
-            <select id="filter-priority">
-                <option value="all">All</option>
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-            </select>
-        </div>
-    </header>
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Kanban Task Board</title>
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Syne:wght@700&display=swap" rel="stylesheet">
+      <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
 
-    <main class="board">
+      <header class="site-header">
+        <div class="header-brand">
+          <h1 class="header-title">Kanban</h1>
+          <span class="task-badge" id="task-counter">0 tasks</span>
+        </div>
+        <div class="header-controls">
+          <div class="filter-wrap">
+            <span class="filter-label">Filter</span>
+            <select id="filter-priority" class="filter-select">
+              <option value="all">All priorities</option>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+        </div>
+      </header>
+
+      <main class="board">
+
         <section id="todo" class="column">
-            <h2>To Do</h2>
-            <ul class="task-list"></ul>
-            <button class="add-btn" data-column="todo">+ Add Task</button>
+          <div class="column-header">
+            <span class="column-dot dot-todo"></span>
+            <h2 class="column-title">To Do</h2>
+            <span class="column-count" id="count-todo">0</span>
+          </div>
+          <ul class="task-list" id="list-todo"></ul>
+          <button class="add-btn" data-column="todo">+ Add task</button>
         </section>
 
         <section id="inprogress" class="column">
-            <h2>In Progress</h2>
-            <ul class="task-list"></ul>
-            <button class="add-btn" data-column="inprogress">+ Add Task</button>
+          <div class="column-header">
+            <span class="column-dot dot-inprogress"></span>
+            <h2 class="column-title">In Progress</h2>
+            <span class="column-count" id="count-inprogress">0</span>
+          </div>
+          <ul class="task-list" id="list-inprogress"></ul>
+          <button class="add-btn" data-column="inprogress">+ Add task</button>
         </section>
 
         <section id="done" class="column">
-            <h2>Done</h2>
-            <ul class="task-list"></ul>
-            <button class="add-btn" data-column="done">+ Add Task</button>
-            <button id="clear-done">Clear All Done</button>
+          <div class="column-header">
+            <span class="column-dot dot-done"></span>
+            <h2 class="column-title">Done</h2>
+            <span class="column-count" id="count-done">0</span>
+          </div>
+          <ul class="task-list" id="list-done"></ul>
+          <div class="column-footer">
+            <button class="add-btn" data-column="done">+ Add task</button>
+            <button class="clear-btn" id="clear-done">Clear all</button>
+          </div>
         </section>
-    </main>
 
-    <div id="modal-overlay" class="is-hidden">
+      </main>
+
+      <!-- Modal Overlay -->
+      <div id="modal-overlay" class="modal-overlay is-hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title-text">
         <div class="modal">
-            <h3 id="modal-title-text">Add New Task</h3>
-            <input type="text" id="task-title" placeholder="Title">
-            <textarea id="task-desc" placeholder="Description"></textarea>
-            <select id="task-priority">
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-            </select>
-            <input type="date" id="task-date">
-            <div class="modal-actions">
-                <button id="cancel-task">Cancel</button>
-                <button id="save-task">Save Task</button>
+          <div class="modal-header">
+            <h3 id="modal-title-text">Add new task</h3>
+            <button class="modal-close" id="modal-close-x" aria-label="Close modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="field-group">
+              <label for="task-title" class="field-label">Title</label>
+              <input type="text" id="task-title" class="field-input" placeholder="Task title…" autocomplete="off">
             </div>
+            <div class="field-group">
+              <label for="task-desc" class="field-label">Description</label>
+              <textarea id="task-desc" class="field-input field-textarea" placeholder="Add a description…" rows="3"></textarea>
+            </div>
+            <div class="field-row">
+              <div class="field-group">
+                <label for="task-priority" class="field-label">Priority</label>
+                <select id="task-priority" class="field-input field-select">
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label for="task-date" class="field-label">Due date</label>
+                <input type="date" id="task-date" class="field-input">
+              </div>
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button id="cancel-task" class="btn btn-ghost">Cancel</button>
+            <button id="save-task" class="btn btn-primary">Save task</button>
+          </div>
         </div>
-    </div>
+      </div>
 
-    <script src="taskmanager.js"></script>
-</body>
+      <script src="taskmanager.js"></script>
+    </body>
 </html>
