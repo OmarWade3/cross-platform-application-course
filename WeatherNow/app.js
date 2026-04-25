@@ -3,6 +3,7 @@
 // ─────────────────────────────────────────
 const GEOCODING_URL = "https://geocoding-api.open-meteo.com/v1/search";
 const WEATHER_URL   = "https://api.open-meteo.com/v1/forecast";
+const WORLDTIME_URL = "https://worldtimeapi.org/api/timezone";
 
 // ─────────────────────────────────────────
 //  Weather code lookup table
@@ -47,12 +48,11 @@ function getDayName(dateStr) {
 }
 
 // ─────────────────────────────────────────
-//  Task 1 - build skeleton forecast cards
+//  Task 1 - skeleton cards
 // ─────────────────────────────────────────
 function buildSkeletonForecast() {
   const grid = document.getElementById("forecast-grid");
   grid.innerHTML = "";
-
   for (let i = 0; i < 7; i++) {
     grid.innerHTML += `
       <div class="forecast-card">
@@ -64,10 +64,8 @@ function buildSkeletonForecast() {
   }
 }
 
-// Resets the current weather card back to skeleton state
 function resetCurrentCardToSkeleton() {
-  const ids = ["city-name", "weather-desc", "temperature", "humidity", "wind-speed"];
-  ids.forEach(id => {
+  ["city-name", "weather-desc", "temperature", "humidity", "wind-speed"].forEach(id => {
     const el = document.getElementById(id);
     el.classList.add("skeleton");
     el.textContent = "";
@@ -77,20 +75,38 @@ function resetCurrentCardToSkeleton() {
   icon.classList.add("skeleton", "icon-skel");
   icon.textContent = "";
 
-  // Reset local-time container and clear its inner spans
   document.getElementById("local-time").classList.add("skeleton");
   document.getElementById("time-value").textContent = "";
   document.getElementById("time-zone").textContent  = "";
 }
 
 // ─────────────────────────────────────────
-//  Task 2 - Step 1: Geocoding API call
-//  Resolves city name → lat + lon
+//  Task 4 - fetch with 10s AbortController timeout
+// ─────────────────────────────────────────
+async function fetchWithTimeout(url, options = {}) {
+  const controller = new AbortController();
+  const timeoutId  = setTimeout(() => controller.abort(), 10000);
+
+  try {
+    const response = await fetch(url, { ...options, signal: controller.signal });
+    clearTimeout(timeoutId);
+    return response;
+  } catch (err) {
+    clearTimeout(timeoutId);
+    if (err.name === "AbortError") {
+      throw new Error("Request timed out after 10 seconds. Please try again.");
+    }
+    throw err;
+  }
+}
+
+// ─────────────────────────────────────────
+//  Task 2 - Step 1: Geocoding
 // ─────────────────────────────────────────
 async function getCoordinates(cityName) {
   const url = `${GEOCODING_URL}?name=${encodeURIComponent(cityName)}&count=1&language=en&format=json`;
 
-  const response = await fetch(url);
+  const response = await fetchWithTimeout(url);
 
   if (!response.ok) {
     throw new Error(`Geocoding request failed (HTTP ${response.status})`);
@@ -98,7 +114,7 @@ async function getCoordinates(cityName) {
 
   const data = await response.json();
 
-  // Return null if city not found — don't throw, just handle gracefully in the caller
+  // Empty results means city not found — return null, don't throw
   if (!data.results || data.results.length === 0) {
     return null;
   }
@@ -108,8 +124,7 @@ async function getCoordinates(cityName) {
 }
 
 // ─────────────────────────────────────────
-//  Task 2 - Step 2: Weather API call
-//  Fetches current weather + 7-day forecast
+//  Task 2 - Step 2: Weather data
 // ─────────────────────────────────────────
 async function getWeather(lat, lon) {
   const params = new URLSearchParams({
@@ -122,7 +137,7 @@ async function getWeather(lat, lon) {
     forecast_days:   7,
   });
 
-  const response = await fetch(`${WEATHER_URL}?${params}`);
+  const response = await fetchWithTimeout(`${WEATHER_URL}?${params}`);
 
   if (!response.ok) {
     throw new Error(`Weather request failed (HTTP ${response.status})`);
@@ -132,18 +147,14 @@ async function getWeather(lat, lon) {
 }
 
 // ─────────────────────────────────────────
-//  Task 2 - Step 3: Populate UI with data
-//  Removes skeleton classes and fills values
+//  Task 2 - Step 3: Populate UI
 // ─────────────────────────────────────────
 function populateCurrentCard(cityInfo, weatherData) {
-  const current = weatherData.current_weather;
-  const info    = getWeatherInfo(current.weathercode);
-
-  // Get humidity + wind from first hourly slot (closest to current time)
+  const current   = weatherData.current_weather;
+  const info      = getWeatherInfo(current.weathercode);
   const humidity  = weatherData.hourly.relativehumidity_2m[0];
   const windSpeed = weatherData.hourly.windspeed_10m[0];
 
-  // Helper: set text content and remove skeleton styling
   function fill(id, value) {
     const el = document.getElementById(id);
     el.classList.remove("skeleton", "icon-skel");
@@ -157,7 +168,7 @@ function populateCurrentCard(cityInfo, weatherData) {
   fill("wind-speed",   `${windSpeed} km/h`);
   fill("weather-icon", info.icon);
 
-  // Remove skeleton from local-time container — content filled by Task 3
+  // local-time skeleton removed here; text filled in Task 3
   document.getElementById("local-time").classList.remove("skeleton");
 }
 
@@ -183,60 +194,20 @@ function populateForecastCards(weatherData) {
 }
 
 // ─────────────────────────────────────────
-//  Task 2 - Main search function
-//  Chains: geocoding → weather → UI update
-// ─────────────────────────────────────────
-async function searchWeather(cityName) {
-  hideError();
-  resetCurrentCardToSkeleton();
-  buildSkeletonForecast();
-  setLoading(true);
-
-  try {
-    // Step 1: resolve city name to coordinates
-    const cityInfo = await getCoordinates(cityName);
-
-    // City not found — show error without throwing an exception
-    if (!cityInfo) {
-      showError(`City "${cityName}" not found. Please check the spelling and try again.`);
-      setLoading(false);
-      return;
-    }
-
-    // Step 2: fetch weather using the coordinates
-    const weatherData = await getWeather(cityInfo.latitude, cityInfo.longitude);
-
-    // Step 3: update the UI with real data
-    populateCurrentCard(cityInfo, weatherData);
-    populateForecastCards(weatherData);
-
-    // Task 3: fetch local time using jQuery $.getJSON() to WorldTimeAPI
-    fetchLocalTime(cityInfo.timezone);
-
-  } catch (err) {
-    // Catches network failures or bad HTTP responses
-    console.error("Fetch error:", err);
-    showError("Network error: could not load weather data. Please check your connection.", true);
-    resetCurrentCardToSkeleton();
-    buildSkeletonForecast();
-  }
-
-  setLoading(false);
-}
-
-// ─────────────────────────────────────────
-//  Task 3 - jQuery $.getJSON()
-//  Fetches local time from WorldTimeAPI
-//  Uses .done(), .fail(), .always() chaining
+//  Task 3 - jQuery $.ajax() for local time
+//
+//  Why $.ajax and not $.getJSON?
+//  $.getJSON() appends a callback param which turns the request into JSONP.
+//  WorldTimeAPI supports regular CORS but NOT JSONP, so it fails.
+//  $.ajax() with dataType: "json" sends a plain GET with proper CORS headers.
 // ─────────────────────────────────────────
 function fetchLocalTime(timezone) {
-  // WorldTimeAPI expects the timezone in the URL path e.g. "Asia/Kuala_Lumpur"
-  const url = `https://worldtimeapi.org/api/timezone/${timezone}`;
+  const url = `${WORLDTIME_URL}/${timezone}`;
 
-  $.getJSON(url)
+  $.ajax({ url: url, method: "GET", dataType: "json" })
     .done(function (data) {
-      // Parse the datetime string and format it as HH:MM
-      const date = new Date(data.datetime);
+      // data.datetime is an ISO 8601 string e.g. "2024-06-10T14:32:00+08:00"
+      const date    = new Date(data.datetime);
       const timeStr = date.toLocaleTimeString("en-US", {
         hour:   "2-digit",
         minute: "2-digit",
@@ -244,13 +215,14 @@ function fetchLocalTime(timezone) {
       });
 
       document.getElementById("time-value").textContent = timeStr;
-      document.getElementById("time-zone").textContent  = timezone.replace("_", " ");
+      // Replace underscores so "Asia/Kuala_Lumpur" shows as "Asia/Kuala Lumpur"
+      document.getElementById("time-zone").textContent  = timezone.replace(/_/g, " ");
     })
-    .fail(function () {
-      // Timezone not found or API unavailable — fall back to browser local time
-      console.warn("WorldTimeAPI failed for timezone:", timezone, "— using browser local time");
+    .fail(function (jqXHR, textStatus) {
+      // API unavailable or timezone string not recognised — fall back to browser time
+      console.warn(`WorldTimeAPI failed (${textStatus}) for "${timezone}" — using browser local time`);
 
-      const now = new Date();
+      const now     = new Date();
       const timeStr = now.toLocaleTimeString("en-US", {
         hour:   "2-digit",
         minute: "2-digit",
@@ -261,9 +233,71 @@ function fetchLocalTime(timezone) {
       document.getElementById("time-zone").textContent  = "Local Time (fallback)";
     })
     .always(function () {
-      // Log a timestamp every time the request completes (success or failure)
+      // Log completion timestamp regardless of success or failure
       console.log(`[WorldTimeAPI] Request completed at: ${new Date().toISOString()}`);
     });
+}
+
+// ─────────────────────────────────────────
+//  Task 2 - Main search orchestrator
+// ─────────────────────────────────────────
+async function searchWeather(cityName) {
+  hideError();
+  resetCurrentCardToSkeleton();
+  buildSkeletonForecast();
+  setLoading(true);
+
+  try {
+    const cityInfo = await getCoordinates(cityName);
+
+    if (!cityInfo) {
+      showError(`City "${cityName}" not found. Please check the spelling and try again.`);
+      setLoading(false);
+      return;
+    }
+
+    const weatherData = await getWeather(cityInfo.latitude, cityInfo.longitude);
+
+    populateCurrentCard(cityInfo, weatherData);
+    populateForecastCards(weatherData);
+    fetchLocalTime(cityInfo.timezone);
+
+  } catch (err) {
+    console.error("Search error:", err);
+    showError(err.message || "Something went wrong. Please try again.", true);
+    resetCurrentCardToSkeleton();
+    buildSkeletonForecast();
+  }
+
+  setLoading(false);
+}
+
+// ─────────────────────────────────────────
+//  Task 4 - input validation
+// ─────────────────────────────────────────
+function validateInput(city) {
+  if (!city) {
+    showError("Please enter a city name.");
+    return false;
+  }
+  if (city.length < 2) {
+    showError("City name must be at least 2 characters.");
+    return false;
+  }
+  return true;
+}
+
+// ─────────────────────────────────────────
+//  Task 4 - debounce utility
+//  Returns a function that waits `delay` ms
+//  after the last call before executing
+// ─────────────────────────────────────────
+function debounce(fn, delay) {
+  let timer;
+  return function (...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), delay);
+  };
 }
 
 // ─────────────────────────────────────────
@@ -288,15 +322,33 @@ function setLoading(isLoading) {
 // ─────────────────────────────────────────
 //  Event listeners
 // ─────────────────────────────────────────
-document.getElementById("search-btn").addEventListener("click", function () {
-  const city = document.getElementById("city-input").value.trim();
-  if (!city) {
-    showError("Please enter a city name.");
-    return;
+
+// Debounced handler for typing — fires 500ms after user stops
+// Only triggers if input is 2+ chars; clears error while typing shorter
+const handleDebouncedInput = debounce(function (e) {
+  const city = e.target.value.trim();
+  if (city.length >= 2) {
+    hideError();
+    searchWeather(city);
+  } else if (city.length === 0) {
+    hideError();
   }
+}, 500);
+
+document.getElementById("city-input").addEventListener("input", handleDebouncedInput);
+
+// Search button — cancels any pending debounce by re-validating immediately
+// This prevents a double API call if the user types and then quickly clicks Search
+document.getElementById("search-btn").addEventListener("click", function () {
+  // Clear the debounce timer by re-assigning (handled inside debounce closure)
+  // We call searchWeather directly here — validateInput prevents empty/short searches
+  const city = document.getElementById("city-input").value.trim();
+  if (!validateInput(city)) return;
+  hideError();
   searchWeather(city);
 });
 
+// Enter key triggers the button click (which also bypasses the debounce)
 document.getElementById("city-input").addEventListener("keydown", function (e) {
   if (e.key === "Enter") document.getElementById("search-btn").click();
 });
@@ -304,7 +356,7 @@ document.getElementById("city-input").addEventListener("keydown", function (e) {
 // Retry button re-runs the last search
 document.getElementById("retry-btn").addEventListener("click", function () {
   const city = document.getElementById("city-input").value.trim();
-  if (city) searchWeather(city);
+  if (validateInput(city)) searchWeather(city);
 });
 
 // ─────────────────────────────────────────
