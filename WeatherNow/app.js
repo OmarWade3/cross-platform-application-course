@@ -66,7 +66,7 @@ function buildSkeletonForecast() {
 
 // Resets the current weather card back to skeleton state
 function resetCurrentCardToSkeleton() {
-  const ids = ["city-name", "weather-desc", "temperature", "humidity", "wind-speed", "local-time"];
+  const ids = ["city-name", "weather-desc", "temperature", "humidity", "wind-speed"];
   ids.forEach(id => {
     const el = document.getElementById(id);
     el.classList.add("skeleton");
@@ -76,6 +76,11 @@ function resetCurrentCardToSkeleton() {
   const icon = document.getElementById("weather-icon");
   icon.classList.add("skeleton", "icon-skel");
   icon.textContent = "";
+
+  // Reset local-time container and clear its inner spans
+  document.getElementById("local-time").classList.add("skeleton");
+  document.getElementById("time-value").textContent = "";
+  document.getElementById("time-zone").textContent  = "";
 }
 
 // ─────────────────────────────────────────
@@ -152,11 +157,8 @@ function populateCurrentCard(cityInfo, weatherData) {
   fill("wind-speed",   `${windSpeed} km/h`);
   fill("weather-icon", info.icon);
 
-  // local-time is handled in Task 3 (jQuery $.ajax to WorldTimeAPI)
-  // show timezone as a temporary placeholder until then
-  const timeEl = document.getElementById("local-time");
-  timeEl.classList.remove("skeleton");
-  timeEl.textContent = cityInfo.timezone;
+  // Remove skeleton from local-time container — content filled by Task 3
+  document.getElementById("local-time").classList.remove("skeleton");
 }
 
 function populateForecastCards(weatherData) {
@@ -208,7 +210,8 @@ async function searchWeather(cityName) {
     populateCurrentCard(cityInfo, weatherData);
     populateForecastCards(weatherData);
 
-    // TODO Task 3: fetch local time using jQuery $.ajax() to WorldTimeAPI
+    // Task 3: fetch local time using jQuery $.getJSON() to WorldTimeAPI
+    fetchLocalTime(cityInfo.timezone);
 
   } catch (err) {
     // Catches network failures or bad HTTP responses
@@ -219,6 +222,48 @@ async function searchWeather(cityName) {
   }
 
   setLoading(false);
+}
+
+// ─────────────────────────────────────────
+//  Task 3 - jQuery $.getJSON()
+//  Fetches local time from WorldTimeAPI
+//  Uses .done(), .fail(), .always() chaining
+// ─────────────────────────────────────────
+function fetchLocalTime(timezone) {
+  // WorldTimeAPI expects the timezone in the URL path e.g. "Asia/Kuala_Lumpur"
+  const url = `https://worldtimeapi.org/api/timezone/${timezone}`;
+
+  $.getJSON(url)
+    .done(function (data) {
+      // Parse the datetime string and format it as HH:MM
+      const date = new Date(data.datetime);
+      const timeStr = date.toLocaleTimeString("en-US", {
+        hour:   "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      });
+
+      document.getElementById("time-value").textContent = timeStr;
+      document.getElementById("time-zone").textContent  = timezone.replace("_", " ");
+    })
+    .fail(function () {
+      // Timezone not found or API unavailable — fall back to browser local time
+      console.warn("WorldTimeAPI failed for timezone:", timezone, "— using browser local time");
+
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString("en-US", {
+        hour:   "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      });
+
+      document.getElementById("time-value").textContent = timeStr;
+      document.getElementById("time-zone").textContent  = "Local Time (fallback)";
+    })
+    .always(function () {
+      // Log a timestamp every time the request completes (success or failure)
+      console.log(`[WorldTimeAPI] Request completed at: ${new Date().toISOString()}`);
+    });
 }
 
 // ─────────────────────────────────────────
