@@ -1,0 +1,282 @@
+/* ── Google Font ── */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* ── Variables ── */
+:root {
+  --bg: #f0f4f8;
+  --card: #ffffff;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --error-bg: #fef2f2;
+  --error-border: #fca5a5;
+  --error-text: #dc2626;
+  --radius: 12px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 40px 20px 60px;
+}
+
+/* ── Header ── */
+header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.subtitle {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+/* ── Search bar ── */
+.search-bar {
+  display: flex;
+  gap: 10px;
+  max-width: 500px;
+  margin: 0 auto 20px;
+}
+
+.search-bar input {
+  flex: 1;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.search-bar input:focus {
+  border-color: var(--accent);
+}
+
+.search-bar button {
+  padding: 10px 22px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.search-bar button:hover {
+  background: var(--accent-hover);
+}
+
+.search-bar button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Error message ── */
+#error-msg {
+  max-width: 500px;
+  margin: 0 auto 16px;
+  padding: 12px 16px;
+  background: var(--error-bg);
+  border: 1px solid var(--error-border);
+  border-radius: var(--radius);
+  color: var(--error-text);
+  font-size: 0.88rem;
+}
+
+#error-msg.hidden {
+  display: none;
+}
+
+/* ── Section labels ── */
+.section-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+/* ── Current weather card ── */
+#current-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.current-left {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#city-name {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+#weather-desc {
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+
+#temperature {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.stats-row {
+  display: flex;
+  gap: 24px;
+  margin-top: 6px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.stat-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.current-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+#weather-icon {
+  font-size: 4rem;
+  line-height: 1;
+}
+
+#local-time {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+/* ── 7-day forecast grid ── */
+#forecast-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+
+.forecast-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.fc-day {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.fc-icon {
+  font-size: 1.6rem;
+}
+
+.fc-high {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.fc-low {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ── Skeleton loading animation ── */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #e0e0e0 25%, #f5f5f5 50%, #e0e0e0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+  color: transparent !important; /* hide text while skeleton is active */
+  min-width: 80px;
+  min-height: 1em;
+}
+
+/* specific skeleton sizes */
+#city-name.skeleton    { width: 180px; height: 2rem; }
+#weather-desc.skeleton { width: 140px; height: 1rem; }
+#temperature.skeleton  { width: 100px; height: 3rem; }
+.stat-value.skeleton   { width: 60px;  height: 1rem; }
+.icon-skel             { width: 64px;  height: 64px; border-radius: 8px; }
+#local-time.skeleton   { width: 90px;  height: 1rem; }
+
+.fc-day.skeleton  { width: 32px; height: 0.7rem; }
+.fc-icon.skeleton { width: 36px; height: 36px; border-radius: 50%; }
+.fc-high.skeleton { width: 28px; height: 0.9rem; }
+.fc-low.skeleton  { width: 22px; height: 0.8rem; }
+
+/* ── Responsive ── */
+@media (max-width: 700px) {
+  #forecast-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (max-width: 480px) {
+  #current-card { flex-direction: column; }
+  .current-right { align-items: flex-start; }
+  #forecast-grid { grid-template-columns: repeat(2, 1fr); }
+}
